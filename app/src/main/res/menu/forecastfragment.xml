@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ForecastFragment">
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="1"
+        android:title="@string/action_refresh"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_preferred_location_on_map"
+        android:orderInCategory="2"
+        android:title="@string/action_location_on_map"
+        app:showAsAction="never" />
+</menu>

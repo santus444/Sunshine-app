@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Sunshine</string>
+    <string name="hello_world">Today, June 24</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_label">Location</string>
+    <string name="pref_location_default" translatable="false">40299</string>
+    <string name="pref_units_key">units</string>
+    <string name="pref_units_lable">Units</string>
+    <string name="pref_units_default" translateble="false">metric</string>
+    <string name="pref_units_dialog_title">Pick your Units</string>
+    <string name="action_location_on_map">View location on Map</string>
+
+</resources>
