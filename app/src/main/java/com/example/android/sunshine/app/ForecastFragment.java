@@ -66,16 +66,6 @@ public class ForecastFragment extends Fragment {
             updateWeather();
             return true;
 
-        }else if(id == R.id.action_preferred_location_on_map){
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW);
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String zip = preferences.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
-            mapIntent.setData(Uri.parse("geo:0,0?q="+zip));
-            if(mapIntent.resolveActivity(getActivity().getPackageManager()) != null ){
-                startActivity(mapIntent);
-            }else {
-                Toast.makeText(getActivity(), "No Maps app is available", Toast.LENGTH_SHORT).show();
-            }
         }
         return true;
     }
