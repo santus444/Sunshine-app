@@ -14,5 +14,7 @@
     <string name="pref_units_dialog_title">Pick your Units</string>
     <string name="action_location_on_map">View location on Map</string>
     <string name="share">Share</string>
+    <string name="pref_units_metric" translateble="false">metric</string>
+    <string name="pref_units_imperial" translateble="false">imperial</string>
 
 </resources>
