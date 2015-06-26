@@ -49,6 +49,7 @@ public class WeatherProvider extends ContentProvider {
                         "." + WeatherContract.WeatherEntry.COLUMN_LOC_KEY +
                         " = " + WeatherContract.LocationEntry.TABLE_NAME +
                         "." + WeatherContract.LocationEntry._ID);
+
     }
 
     //location.location_setting = ?
@@ -122,7 +123,7 @@ public class WeatherProvider extends ContentProvider {
         // 2) Use the addURI function to match each of the types.  Use the constants from
         // WeatherContract to help define the types to the UriMatcher.
 
-        sURIMatcher.addURI(WeatherContract.CONTENT_AUTHORITY,"weather", WEATHER);
+        sURIMatcher.addURI(WeatherContract.CONTENT_AUTHORITY,WeatherContract.PATH_WEATHER, WEATHER);
         sURIMatcher.addURI(WeatherContract.CONTENT_AUTHORITY,"weather/*", WEATHER_WITH_LOCATION);
         sURIMatcher.addURI(WeatherContract.CONTENT_AUTHORITY,"weather/*/#", WEATHER_WITH_LOCATION_AND_DATE);
         sURIMatcher.addURI(WeatherContract.CONTENT_AUTHORITY,"location", LOCATION);
@@ -188,12 +189,12 @@ public class WeatherProvider extends ContentProvider {
             }
             // "weather"
             case WEATHER: {
-                retCursor = null;
+                retCursor = mOpenHelper.getReadableDatabase().query(WeatherContract.WeatherEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             }
             // "location"
             case LOCATION: {
-                retCursor = null;
+                retCursor = mOpenHelper.getReadableDatabase().query(WeatherContract.LocationEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             }
 
