@@ -248,6 +248,7 @@ public class WeatherProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         // handle.  If it doesn't match these, throw an UnsupportedOperationException.
         int rowsDeleted;
+        if(null == selection) selection = "1";
         switch (match){
             case WEATHER: {
                 rowsDeleted = db.delete(WeatherContract.WeatherEntry.TABLE_NAME, selection, selectionArgs);

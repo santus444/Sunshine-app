@@ -1,8 +1,10 @@
 package com.example.android.sunshine.app;
 
 import android.app.LoaderManager;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,7 +49,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(FORECAST_LOADER, this.ge);
+        getLoaderManager().initLoader(FORECAST_LOADER, this.getActiv);
     }
 
     @Override
@@ -74,9 +76,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather(){
-//        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity(), mForecastAdapter);
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        weatherTask.execute(preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default)), preferences.getString(getString(R.string.pref_units_key),getString(R.string.pref_units_default)));
+        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity(), mForecastAdapter);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+/       weatherTask.execute(preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default)), preferences.getString(getString(R.string.pref_units_key),getString(R.string.pref_units_default)));
 
     }
     @Override
