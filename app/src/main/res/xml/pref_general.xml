@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        android:key="@string/pref_location_key"
-        android:title="@string/pref_location_label"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/com.example.android.sunshine.app">
+    <com.example.android.sunshine.app.LocationEditTextPreference
         android:defaultValue="@string/pref_location_default"
         android:inputType="text"
-        android:singleLine="true"/>
+        android:key="@string/pref_location_key"
+        android:singleLine="true"
+        android:title="@string/pref_location_label"
+        custom:minLength="3" />
 
     <ListPreference
-        android:key="@string/pref_units_key"
-        android:title="@string/pref_units_lable"
+        android:defaultValue="@string/pref_units_default"
         android:dialogTitle="@string/pref_units_dialog_title"
         android:entries="@array/units"
         android:entryValues="@array/unit_values"
-        android:defaultValue="@string/pref_units_default"/>
+        android:key="@string/pref_units_key"
+        android:title="@string/pref_units_lable" />
+
+    <CheckBoxPreference
+        android:defaultValue="@string/pref_notifications_default"
+        android:key="@string/pref_notifications_key"
+        android:summaryOff="@string/pref_notifications_summary_off"
+        android:summaryOn="@string/pref_notifications_summary_on"
+        android:title="@string/pref_notifications_title" />
+    <ListPreference
+        android:dialogTitle="Selct and icon pack"
+        android:entries="@array/packs"
+        android:entryValues="@array/packs_value"
+        android:key="@string/pref_packs_key"
+        android:title="@string/pref_packs_title" />
 
 </PreferenceScreen>

@@ -1,0 +1,9 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/widget_ten_days"
+    android:minHeight="220dp"
+    android:minResizeHeight="220dp"
+    android:minResizeWidth="220dp"
+    android:minWidth="220dp"
+    android:previewImage="@drawable/today_ori_portrait"
+    android:resizeMode="horizontal"
+    android:updatePeriodMillis="0" />

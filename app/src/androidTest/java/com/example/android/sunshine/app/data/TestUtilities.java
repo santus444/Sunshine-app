@@ -82,7 +82,7 @@ public class TestUtilities extends AndroidTestCase {
         LocationEntry part of the WeatherContract as well as the WeatherDbHelper.
      */
     static long insertNorthPoleLocationValues(Context context) {
-        // insert our test records into the database
+        // insert our test records into the databasrame
         WeatherDbHelper dbHelper = new WeatherDbHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues testValues = TestUtilities.createNorthPoleLocationValues();

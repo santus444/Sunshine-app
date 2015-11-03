@@ -1,0 +1,53 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/widget_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/sunshine_blue"
+            android:orientation="horizontal"
+            android:theme="@style/ActionBar.Solid.Sunshine.NoTitle">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:theme="@style/Widget.AppCompat.ActionBar.Solid" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/ten_days_listview"
+            style="@style/ForecastListStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/sunshine_light_blue"></ListView>
+
+        <TextView
+            android:id="@+id/widget_listview_forecast_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/sunshine_light_blue"
+            android:gravity="center_horizontal"
+            android:paddingBottom="16dp"
+            android:paddingEnd="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:text="@string/empty_forecast_list" />
+
+    </LinearLayout>
+</FrameLayout>
