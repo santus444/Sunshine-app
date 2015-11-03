@@ -7,11 +7,20 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <permission
+        android:name="com.example.android.sunshine.app.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.example.android.sunshine.app.permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:supportsRtl="true"
         android:theme="@style/ForecastTheme">
         <activity
             android:name=".MainActivity"
@@ -46,15 +55,16 @@
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true" />
-        <service android:name=".service.SunshineService" />
-        <receiver
-            android:name=".service.SunshineService$AlarmReceiver"
-            android:enabled="true" />
+        <!-- <service android:name=".service.SunshineService" /> -->
+        <!-- <receiver -->
+        <!-- android:name=".service.SunshineService$AlarmReceiver" -->
+        <!-- android:enabled="true" /> -->
         <!-- SyncAdapter's dummy authentication service -->
         <service android:name=".sync.SunshineAuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
@@ -66,11 +76,57 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
+        <service android:name=".sync.TodayWidgetIntentService" />
 
+        <receiver
+            android:name=".widget.TodayWidgetProvider"
+            android:label="@string/title_widget_today">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.android.sunshine.app.ACTION_DATA_UPDATED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_today" />
+        </receiver>
+        <receiver
+            android:name=".widget.TenDaysWidgetProvider"
+            android:label="@string/title_widget_ten_days">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.android.sunshine.app.ACTION_DATA_UPDATED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_ten_days" />
+        </receiver>
+
+        <service
+            android:name=".widget.DetailWidgetRemoteViewsService"
+            android:exported="true"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <!--<service-->
+        <!--android:name=".muzei.WeatherMuzeiSource"-->
+        <!--android:description="@string/muzei_description"-->
+        <!--android:enabled="true"-->
+        <!--android:exported="true"-->
+        <!--android:icon="@drawable/ic_muzei"-->
+        <!--android:label="@string/app_name" >-->
+        <!--<intent-filter>-->
+        <!--<action android:name="com.google.android.apps.muzei.api.MuzeiArtSource" />-->
+        <!--</intent-filter>-->
+
+        <!--<meta-data-->
+        <!--android:name="color"-->
+        <!--android:value="@color/sunshine_blue" />-->
+        <!--</service>-->
     </application>
 
 </manifest>

@@ -8,4 +8,12 @@
         <item>metric</item>
         <item>imperial</item>
     </string-array>
+    <string-array name="packs">
+        <item>Default</item>
+        <item>Pack 1</item>
+    </string-array>
+    <string-array name="packs_value">
+        <item>default</item>
+        <item>pack1</item>
+    </string-array>
 </resources>

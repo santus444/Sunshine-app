@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+
 /**
  * {@link ForecastAdapter} exposes a list of weather forecasts
  * from a {@link android.database.Cursor} to a {@link android.widget.ListView}.
@@ -86,9 +88,17 @@ public class ForecastAdapter extends CursorAdapter {
         int weatherCondition = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
         int viewType = getItemViewType(cursor.getPosition());
         if (viewType == VIEW_TYPE_TODAY) {
-            mainActivityViewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherCondition));
+            //mainActivityViewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherCondition));
+            Glide.with(context)
+                    .load(Utility.getArtResourceUrlForWeatherCondition(context, weatherCondition))
+                    .error(Utility.getArtResourceForWeatherCondition(weatherCondition))
+                    .into(mainActivityViewHolder.iconView);
         } else if (viewType == VIEW_TYPE_FUTURE_DAY) {
-            mainActivityViewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherCondition));
+            //mainActivityViewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(weatherCondition));
+            Glide.with(context)
+                    .load(Utility.getIconResourceUrlForWeatherCondition(context, weatherCondition))
+                    .error(Utility.getIconResourceForWeatherCondition(weatherCondition))
+                    .into(mainActivityViewHolder.iconView);
         }
 
         String description = cursor.getString(ForecastFragment.COL_WEATHER_DESC);

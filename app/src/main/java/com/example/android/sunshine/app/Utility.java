@@ -17,8 +17,12 @@ package com.example.android.sunshine.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+
+import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -127,6 +131,10 @@ public class Utility {
         return prefs.getString(context.getString(R.string.pref_units_key),
                 context.getString(R.string.pref_units_metric))
                 .equals(context.getString(R.string.pref_units_metric));
+    }
+
+    public static String formatTemperature(Context context, double temperature) {
+        return formatTemperature(context, temperature, isMetric(context));
     }
 
     static String formatTemperature(Context context, double temperature, boolean isMetric) {
@@ -247,5 +255,86 @@ public class Utility {
             return R.drawable.art_clouds;
         }
         return -1;
+    }
+
+    public static boolean isConnectedToInternet(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    public static void resetLocationStatus(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor spe = preferences.edit();
+        spe.putInt(context.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+        spe.apply();
+    }
+
+
+    public static String getArtResourceUrlForWeatherCondition(Context context, int weatherCondition) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String selectedPack = preferences.getString(context.getString(R.string.pref_packs_key), "");
+        String icon = null;
+        if (selectedPack.equalsIgnoreCase("pack1")) {
+            StringBuffer url = new StringBuffer("https://raw.githubusercontent.com/udacity/sunshine_icons/master/Archive/Colored/");
+            if (weatherCondition >= 200 && weatherCondition <= 232) {
+                icon = url.append("art_storm.png").toString();
+            } else if (weatherCondition >= 300 && weatherCondition <= 321) {
+                icon = url.append("art_light_rain.png").toString();
+            } else if (weatherCondition >= 500 && weatherCondition <= 504) {
+                icon = url.append("art_rain.png").toString();
+            } else if (weatherCondition == 511) {
+                icon = url.append("art_snow.png").toString();
+            } else if (weatherCondition >= 520 && weatherCondition <= 531) {
+                icon = url.append("art_rain.png").toString();
+            } else if (weatherCondition >= 600 && weatherCondition <= 622) {
+                icon = url.append("art_rain.png").toString();
+            } else if (weatherCondition >= 701 && weatherCondition <= 761) {
+                icon = url.append("art_fog.png").toString();
+            } else if (weatherCondition == 761 || weatherCondition == 781) {
+                icon = url.append("art_storm.png").toString();
+            } else if (weatherCondition == 800) {
+                icon = url.append("art_clear.png").toString();
+            } else if (weatherCondition == 801) {
+                icon = url.append("art_light_clouds.png").toString();
+            } else if (weatherCondition >= 802 && weatherCondition <= 804) {
+                icon = url.append("art_clouds.png").toString();
+            }
+        }
+        return icon;
+    }
+
+    public static String getIconResourceUrlForWeatherCondition(Context context, int weatherCondition) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String selectedPack = preferences.getString(context.getString(R.string.pref_packs_key), "");
+        String icon = null;
+        if (selectedPack.equalsIgnoreCase("pack1")) {
+            StringBuffer url = new StringBuffer("https://raw.githubusercontent.com/udacity/sunshine_icons/master/Archive/Mono/");
+            if (weatherCondition >= 200 && weatherCondition <= 232) {
+                icon = url.append("art_storm.png").toString();
+            } else if (weatherCondition >= 300 && weatherCondition <= 321) {
+                icon = url.append("art_light_rain.png").toString();
+            } else if (weatherCondition >= 500 && weatherCondition <= 504) {
+                icon = url.append("art_rain.png").toString();
+            } else if (weatherCondition == 511) {
+                icon = url.append("art_snow.png").toString();
+            } else if (weatherCondition >= 520 && weatherCondition <= 531) {
+                icon = url.append("art_rain.png").toString();
+            } else if (weatherCondition >= 600 && weatherCondition <= 622) {
+                icon = url.append("art_rain.png").toString();
+            } else if (weatherCondition >= 701 && weatherCondition <= 761) {
+                icon = url.append("art_fog.png").toString();
+            } else if (weatherCondition == 761 || weatherCondition == 781) {
+                icon = url.append("art_storm.png").toString();
+            } else if (weatherCondition == 800) {
+                icon = url.append("art_clear.png").toString();
+            } else if (weatherCondition == 801) {
+                icon = url.append("art_light_clouds.png").toString();
+            } else if (weatherCondition >= 802 && weatherCondition <= 804) {
+                icon = url.append("art_clouds.png").toString();
+            }
+        }
+        return icon;
     }
 }

@@ -1,8 +1,11 @@
 package com.example.android.sunshine.app;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -16,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
@@ -24,21 +29,20 @@ import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
     // must change.
-    static final int COL_WEATHER_ID = 0;
-    static final int COL_WEATHER_DATE = 1;
-    static final int COL_WEATHER_DESC = 2;
-    static final int COL_WEATHER_MAX_TEMP = 3;
-    static final int COL_WEATHER_MIN_TEMP = 4;
-    static final int COL_LOCATION_SETTING = 5;
-    static final int COL_WEATHER_CONDITION_ID = 6;
-    static final int COL_COORD_LAT = 7;
-    static final int COL_COORD_LONG = 8;
-    private static final int FORECAST_LOADER = 0;
-    private static final String[] FORECAST_COLUMNS = {
+    public static final int COL_WEATHER_ID = 0;
+    public static final int COL_WEATHER_DATE = 1;
+    public static final int COL_WEATHER_DESC = 2;
+    public static final int COL_WEATHER_MAX_TEMP = 3;
+    public static final int COL_WEATHER_MIN_TEMP = 4;
+    public static final int COL_LOCATION_SETTING = 5;
+    public static final int COL_WEATHER_CONDITION_ID = 6;
+    public static final int COL_COORD_LAT = 7;
+    public static final int COL_COORD_LONG = 8;
+    public static final String[] FORECAST_COLUMNS = {
             // In this case the id needs to be fully qualified with a table name, since
             // the content provider joins the location & weather tables in the background
             // (both have an _id column)
@@ -55,6 +59,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             WeatherContract.LocationEntry.COLUMN_COORD_LAT,
             WeatherContract.LocationEntry.COLUMN_COORD_LONG
     };
+    private static final int FORECAST_LOADER = 0;
     public String EXTRA_FORECAST = "com.example.android.sunshine.app.forecast";
     String LOG_TAG = ForecastFragment.class.getSimpleName(), SELECTED_KEY = "selectedItem";
     private ForecastAdapter mForecastAdapter;
@@ -62,6 +67,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private ListView mListView;
     private boolean mUseTodayLayout;
     private String mLocation;
+    private String latitude, longitude;
 
     public ForecastFragment() {
     }
@@ -86,6 +92,20 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             updateWeather();
             return true;
 
+        } else if (id == R.id.action_preferred_location_on_map) {
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+            Cursor data = mForecastAdapter.getCursor();
+            data.moveToPosition(0);
+            latitude = data.getString(COL_COORD_LAT);
+            longitude = data.getString(COL_COORD_LONG);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String zip = preferences.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+            mapIntent.setData(Uri.parse("geo:" + latitude + "," + longitude));
+            if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(mapIntent);
+            } else {
+                Toast.makeText(getActivity(), "No Maps app is available", Toast.LENGTH_SHORT).show();
+            }
         }
         return true;
     }
@@ -94,6 +114,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onResume() {
         super.onResume();
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
         updateWeather();
     }
 
@@ -130,6 +151,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
         mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
         mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        View emptyView = rootView.findViewById(R.id.listview_forecast_empty);
+        mListView.setEmptyView(emptyView);
         mListView.setAdapter(mForecastAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -156,7 +179,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
             mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
-
         return rootView;
     }
 
@@ -192,6 +214,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         mForecastAdapter.swapCursor(data);
         if (mPosition != ListView.INVALID_POSITION)
             mListView.setSelection(mPosition);
+        updateEmptyView();
+
     }
 
     @Override
@@ -205,6 +229,45 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equalsIgnoreCase(getActivity().getString(R.string.pref_location_status_key))) {
+            updateEmptyView();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).unregisterOnSharedPreferenceChangeListener(this);
+
+    }
+
+    private void updateEmptyView() {
+        if (mForecastAdapter.getCount() == 0) {
+            TextView tv = (TextView) getView().findViewById(R.id.listview_forecast_empty);
+            if (null != tv) {
+                int message = R.string.empty_forecast_list;
+                @SunshineSyncAdapter.LocationStatus int location = SunshineSyncAdapter.getLocationStatus(getActivity());
+                switch (location) {
+                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
+                        message = R.string.empty_forecast_list_location_server_down;
+                        break;
+                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
+                        message = R.string.empty_forecast_list_location_server_invalid;
+                        break;
+                    case SunshineSyncAdapter.LOCATION_STATUS_INVALID:
+                        message = R.string.empty_forecast_list_invalid_location;
+                    default:
+                        if (!Utility.isConnectedToInternet(getActivity())) {
+                            message = R.string.empty_forecast_list_no_network;
+                        }
+                }
+                tv.setText(message);
+            }
+        }
+    }
+
     /**
      * A callback interface that all activities containing this fragment must
      * implement. This mechanism allows activities to be notified of item
@@ -216,4 +279,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
          */
         void onItemSelected(Uri dateUri);
     }
+
+
 }
